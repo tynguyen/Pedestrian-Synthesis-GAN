@@ -10,6 +10,15 @@ from copy import deepcopy
 from . import networks
 from PIL import Image
 import torchvision.transforms as transforms
+import pdb 
+
+def decodeTensor(tensorA):
+    realA = tensorA[0].detach().cpu().numpy()
+    realA = np.transpose(realA, [1,2,0])
+    realA = (realA * 0.5 + 0.5)*255
+    realA = realA.astype(np.uint8)
+    return realA
+
 
 class Pix2PixModel(BaseModel):
     def name(self):
@@ -89,9 +98,25 @@ class Pix2PixModel(BaseModel):
         self.fake_B = self.netG.forward(self.real_A)
         self.real_B = Variable(self.input_B)
 
-        y,x,w,h = self.bbox
-        self.person_crop_real = self.real_B[:,:,y[0]:h[0],x[0]:w[0]]
-        self.person_crop_fake = self.fake_B[:,:,y[0]:h[0],x[0]:w[0]]
+        x1, y1, x2, y2 = self.bbox
+        self.person_crop_real = self.real_B[:,:,y1[0]:y2[0],x1[0]:x2[0]]
+        self.person_crop_fake = self.fake_B[:,:,y1[0]:y2[0],x1[0]:x2[0]]
+    
+        #print(f"[pix2pix] person bbox: {self.bbox}")
+        
+        # Debug dataloader 
+        #import matplotlib.pyplot as plt 
+        #realA = decodeTensor(self.real_A)
+        #realB = decodeTensor(self.real_B)
+        #fakeB = decodeTensor(self.fake_B)
+        #cropreal = decodeTensor(self.person_crop_real)
+        #cropfake = decodeTensor(self.person_crop_fake)
+        #
+        #plt.imshow(np.hstack([realA, realB, fakeB]))
+        #plt.show() 
+        #plt.imshow(np.hstack([cropreal, cropfake]))
+        #plt.show() 
+
 
     # no backprop gradients
     def test(self):
@@ -99,9 +124,9 @@ class Pix2PixModel(BaseModel):
         self.fake_B = self.netG.forward(self.real_A)
         self.real_B = Variable(self.input_B, volatile=True)
 
-        y,x,w,h = self.bbox
-        self.person_crop_real = self.real_B[:,:,y[0]:h[0],x[0]:w[0]]
-        self.person_crop_fake = self.fake_B[:,:,y[0]:h[0],x[0]:w[0]]
+        x1, y1, x2, y2 = self.bbox
+        self.person_crop_real = self.real_B[:,:,y1[0]:y2[0],x1[0]:x2[0]]
+        self.person_crop_fake = self.fake_B[:,:,y1[0]:y2[0],x1[0]:x2[0]]
 
     # get image paths
     def get_image_paths(self):
@@ -202,10 +227,10 @@ class Pix2PixModel(BaseModel):
         real_B = util.tensor2im(self.real_B.data)
         D2_fake = util.tensor2im(self.person_crop_fake.data)
         D2_real = util.tensor2im(self.person_crop_real.data)
-        y,x,w,h = self.bbox
+        x1, y1, x2, y2 = self.bbox
         display = deepcopy(real_A)
         #print(display.shape)
-        display[y[0]:h[0],x[0]:w[0],:] = D2_fake
+        display[y1[0]:y2[0],x1[0]:x2[0],:] = D2_fake
         return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('real_B', real_B), ('display', display), ('D2_fake',D2_fake),('D2_real',D2_real)])
         #return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('real_B', real_B)])
 

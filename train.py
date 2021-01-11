@@ -3,6 +3,7 @@ from options.train_options import TrainOptions
 from data.data_loader import CreateDataLoader
 from models.models import create_model
 from util.visualizer import Visualizer
+import pdb 
 
 opt = TrainOptions().parse()
 data_loader = CreateDataLoader(opt)
@@ -21,6 +22,7 @@ only_d = False
 for epoch in range(1, opt.niter + opt.niter_decay + 1):
     epoch_start_time = time.time()
     for i, data in enumerate(dataset): 
+        #pdb.set_trace()
         iter_start_time = time.time()
         total_steps += opt.batchSize
         epoch_iter = total_steps - dataset_size * (epoch - 1)

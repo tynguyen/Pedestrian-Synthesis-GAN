@@ -9,11 +9,13 @@ Pedestrian-Synthesis-GAN: Generating Pedestrian Data in Real Scene and Beyond
 Prepare your data before training. The format of your data should follow the file in `datasets`.
 ## Training stage
 ```bash
+python -m visdom.server
 python train.py --dataroot data_path --name model_name --model pix2pix --which_model_netG unet_256 --which_direction BtoA --lambda_A 100 --dataset_mode aligned --use_spp --no_lsgan --norm batch
 ```
 
 ## Testing stage
 ```bash
+python -m visdom.server
 python test.py --dataroot data_path --name model_name --model pix2pix --which_model_netG unet_256 --which_direction BtoA  --dataset_mode aligned --use_spp --norm batch
 ```
 ## Vision

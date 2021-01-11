@@ -6,9 +6,14 @@ from data.base_dataset import BaseDataset
 from data.image_folder import make_dataset
 from PIL import Image
 import json
-
+import pdb
 
 class AlignedDataset(BaseDataset):
+    """
+    *Params:
+        opt.loadSize: 286 - scale raw input image to this size
+        opt.fineSize: 256 - then crop such image to this size 
+    """
     def initialize(self, opt):
         self.opt = opt
         self.root = opt.dataroot
@@ -33,7 +38,7 @@ class AlignedDataset(BaseDataset):
         #print(AB_path)
         bbox_path = self.bbox_paths[index]
         #print(bbox_path)
-
+        # Horizontally attach two images
         w_total = self.opt.loadSize * 2
         w = int(w_total / 2)
         h = self.opt.loadSize
@@ -41,45 +46,26 @@ class AlignedDataset(BaseDataset):
         h_offset = random.randint(0, max(0, h - self.opt.fineSize - 1))
 
         bbox = json.load(open(bbox_path))
-        #bbox = [bbox['y'], bbox['x'], bbox['w'], bbox['h']]
-        #print(bbox['y'], bbox['x'], bbox['w'], bbox['h'])
-        bbox_x = max(int((bbox['x']/self.opt.fineSize)*self.opt.loadSize), 0)
-        bbox_y = max(int((bbox['y']/self.opt.fineSize)*self.opt.loadSize), 0)
-        bbox_w = max(int((bbox['w']/self.opt.fineSize)*self.opt.loadSize), 0)
-        bbox_h = max(int((bbox['h']/self.opt.fineSize)*self.opt.loadSize), 0)
+        #print(f"{__file__}: Bbox:\n {bbox}")
+        #print(f"{__file__}: h_offset: {h_offset}, w_offset: {w_offset}")
 
-        if bbox_y <= h_offset or bbox_x <= w_offset:
-            AB = Image.open(AB_path).convert('RGB')
-            AB = AB.resize((self.opt.fineSize * 2, self.opt.fineSize), Image.BICUBIC)
-            AB = self.transform(AB)
-            A = AB[:, :self.opt.fineSize,
-               :self.opt.fineSize]
-            B = AB[:, :self.opt.fineSize,
-                self.opt.fineSize:2*self.opt.fineSize]
-            bbox = [bbox['y'], bbox['x'], bbox['w'], bbox['h']]
-        else:
-            AB = Image.open(AB_path).convert('RGB')
-            AB = AB.resize((self.opt.loadSize * 2, self.opt.loadSize), Image.BICUBIC)
-            AB = self.transform(AB)
-            A = AB[:, h_offset:h_offset + self.opt.fineSize,
-               w_offset:w_offset + self.opt.fineSize]
-            B = AB[:, h_offset:h_offset + self.opt.fineSize,
-                w + w_offset:w + w_offset + self.opt.fineSize]
-            bbox = [bbox_y-h_offset, bbox_x-w_offset, bbox_w, bbox_h]
-        # print('haha')
-        # print(bbox)
+        AB = Image.open(AB_path).convert('RGB')
+        AB = self.transform(AB)
+        A = AB[:, :self.opt.fineSize,
+           :self.opt.fineSize]
+        B = AB[:, :self.opt.fineSize,
+            self.opt.fineSize:2*self.opt.fineSize]
+        # Return bbox in the format: x1, y1, x2, y2
+        bbox = [bbox['x1'], bbox['y1'], bbox['x2'], bbox['y2']]        
         
-
+        # Horizontally flip
         if (not self.opt.no_flip) and random.random() < 0.5:
             idx = [i for i in range(A.size(2) - 1, -1, -1)]
             idx = torch.LongTensor(idx)
             A = A.index_select(2, idx)
             B = B.index_select(2, idx)
-            #print A.size(2)
-            bbox = [bbox[0], A.size(2) - bbox[2], A.size(2) - bbox[1], bbox[3]]
-        # print('hehe')
-        # print(bbox)
-        #print(A.size())
+            #print(f"A size: {A.shape}, A2: {A.size(2)}")
+            bbox = [A.size(2)-bbox[2], bbox[1], A.size(2) - bbox[0], bbox[3]]
         return {'A': A, 'B': B, 'bbox': bbox,
                 'A_paths': AB_path, 'B_paths': AB_path}
 
