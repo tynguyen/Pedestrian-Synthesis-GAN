@@ -33,6 +33,13 @@ The corresponding *1.json* has the format
 ``` 
 which represents the bounding box in the (on the left) original image of the sidebyside image. 
 
+### Three drone Dataset
+Download three_drones dataset at [this](https://drive.google.com/file/d/1VP6Koz2xYzYsIVAJsmn0_JhasWuacCCq/view?usp=sharing)
+
+Examples: 
+<img src="imgs/autel.jpg"></img>
+<img src="imgs/fla_450.jpg"></img>
+
 ## Training stage
 ```bash
 python -m visdom.server
