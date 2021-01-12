@@ -211,14 +211,14 @@ class Pix2PixModel(BaseModel):
             self.optimizer_G.step()
 
     def get_current_errors(self):
-        return OrderedDict([('G_GAN_image', self.loss_G_GAN_image.data[0]),
-                            ('G_GAN_person', self.loss_G_GAN_person.data[0]),
-                            ('G_L1', self.loss_G_L1.data[0]),
+        return OrderedDict([('G_GAN_image', self.loss_G_GAN_image.item()),
+                            ('G_GAN_person', self.loss_G_GAN_person.item()),
+                            ('G_L1', self.loss_G_L1.item()),
                             #('G_L1_person', self.loss_G_L1_person.data[0]),
-                            ('D_image_real', self.loss_D_image_real.data[0]),
-                            ('D_image_fake', self.loss_D_image_fake.data[0]),
-                            ('D_person_real', self.loss_D_person_real.data[0]),
-                            ('D_person_fake', self.loss_D_person_fake.data[0])
+                            ('D_image_real', self.loss_D_image_real.item()),
+                            ('D_image_fake', self.loss_D_image_fake.item()),
+                            ('D_person_real', self.loss_D_person_real.item()),
+                            ('D_person_fake', self.loss_D_person_fake.item())
                             ])
 
     def get_current_visuals(self):
