@@ -128,6 +128,19 @@ class Pix2PixModel(BaseModel):
         self.person_crop_real = self.real_B[:,:,y1[0]:y2[0],x1[0]:x2[0]]
         self.person_crop_fake = self.fake_B[:,:,y1[0]:y2[0],x1[0]:x2[0]]
 
+        # Debug dataloader 
+        #import matplotlib.pyplot as plt 
+        #realA = decodeTensor(self.real_A)
+        #realB = decodeTensor(self.real_B)
+        #fakeB = decodeTensor(self.fake_B)
+        #cropreal = decodeTensor(self.person_crop_real)
+        #cropfake = decodeTensor(self.person_crop_fake)
+        #
+        #plt.imshow(np.hstack([realA, realB, fakeB]))
+        #plt.show() 
+        #plt.imshow(np.hstack([cropreal, cropfake]))
+        #plt.show() 
+
     # get image paths
     def get_image_paths(self):
         return self.image_paths

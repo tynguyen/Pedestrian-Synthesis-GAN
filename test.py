@@ -6,6 +6,7 @@ from models.models import create_model
 from util.visualizer import Visualizer
 from pdb import set_trace as st
 from util import html
+import pdb 
 
 opt = TestOptions().parse()
 opt.nThreads = 1   # test code only supports nThreads = 1
@@ -25,6 +26,7 @@ for i, data in enumerate(dataset):
 #    if i >= opt.how_many:
 #        break
     model.set_input(data)
+    #pdb.set_trace()
     model.test()
     visuals = model.get_current_visuals()
     img_path = model.get_image_paths()

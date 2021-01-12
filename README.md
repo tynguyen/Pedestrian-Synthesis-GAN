@@ -6,7 +6,33 @@ Pedestrian-Synthesis-GAN: Generating Pedestrian Data in Real Scene and Beyond
 </br></br></br>
 
 ## Preparing
-Prepare your data before training. The format of your data should follow the file in `datasets`.
+Prepare your data before training. The format of your data should follow the file in `datasets`. 
+For training and testing phases, the path to data should be given to 
+```
+data_path 
+i.e. --data_path ./dataset/autel 
+```
+where *autel* is the name of the dataset.
+The train/test dataset is structured as follows:
+```
+./dataset/autel
+               -bbox/
+                     -1.json
+                     -2.json
+                      ....
+               -images/
+                     -1.jpeg
+                     -2.jpeg
+                      ....
+```
+An image *1.jpeg* for example is a sidebyside image of size *256x512x3* which consists of (on the left) the image with an object of interest, (on the right) the same image where the area corresponding to the bounding box of the object is replaced by salt-pepper noise. 
+
+The corresponding *1.json* has the format
+```
+{'x1':10, 'y1':20, 'x2': 30, 'y2': 101}
+``` 
+which represents the bounding box in the (on the left) original image of the sidebyside image. 
+
 ## Training stage
 ```bash
 python -m visdom.server
