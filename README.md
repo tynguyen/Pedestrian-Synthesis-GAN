@@ -48,6 +48,18 @@ python -m visdom.server
 python train.py --dataroot data_path --name model_name --model pix2pix --which_model_netG unet_256 --which_direction BtoA --lambda_A 100 --dataset_mode aligned --use_spp --no_lsgan --norm batch
 ```
 
+### Three drone Dataset
+First, choose the drone type 
+```
+vi scripts/train_three_drones.sh
+data_name=.... i.e: "autel", "fla_450"
+```
+Run training
+```
+python -m visdom.server
+bash scripts/train_three_drones.sh
+```
+
 ## Testing stage
 ```bash
 python -m visdom.server
@@ -60,6 +72,18 @@ Run `python -m visdom.server` to see the training process.
 <img src="imgs/compare_3line.png"></img>
 <img src="imgs/compare_cityscapes_1.png"></img>
 <img src="imgs/compare_Tsinghua_1.png"></img>
+
+### Three drone Dataset
+First, choose the drone type 
+```
+vi scripts/test_three_drones.sh
+data_name=.... i.e: "autel", "fla_450"
+```
+Run test 
+```
+python -m visdom.server
+bash scripts/test_three_drones.sh
+```
 
 ## Citation
 If you find this work useful for your research, please cite:
