@@ -3,6 +3,7 @@ import torch
 import os
 from collections import OrderedDict
 from torch.autograd import Variable
+from util.util import decodeTensor 
 import util.util as util
 from util.image_pool import ImagePool
 from .base_model import BaseModel
@@ -12,12 +13,6 @@ from PIL import Image
 import torchvision.transforms as transforms
 import pdb 
 
-def decodeTensor(tensorA):
-    realA = tensorA[0].detach().cpu().numpy()
-    realA = np.transpose(realA, [1,2,0])
-    realA = (realA * 0.5 + 0.5)*255
-    realA = realA.astype(np.uint8)
-    return realA
 
 
 class Pix2PixModel(BaseModel):

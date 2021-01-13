@@ -11,7 +11,12 @@ class SingleDataset(BaseDataset):
         self.root = opt.dataroot
         self.dir_A = os.path.join(opt.dataroot)
 
-        self.A_paths = make_dataset(self.dir_A)
+        #self.A_paths = make_dataset(self.dir_A)
+
+        self.A_paths = os.path.join(opt.dataroot, 'images', opt.phase)
+        self.dir_bbox = os.path.join(opt.dataroot, 'bbox', opt.phase)
+        
+        self.A_paths, _ = make_dataset(self.A_paths, self.dir_bbox)
 
         self.A_paths = sorted(self.A_paths)
 

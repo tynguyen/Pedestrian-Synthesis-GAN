@@ -7,6 +7,25 @@ import numpy as np
 import os
 import collections
 
+def decodeTensor(tensorA, num_samples=1):
+    """
+    @Brief: decode a tensor to numpy images 
+    * Inputs: 
+        tensorA (torch tensor): N x C x H x W (normalized to [-1, 1]
+    * Outputs: 
+        realA (np.ndarray): (num_samples) x H x W x C (converted to [0, 255]
+    """
+    realA = tensorA[:num_samples].detach().cpu().numpy()
+    if num_samples == 1:
+        realA = np.transpose(realA, [1,2,0])
+    elif num_samples > 1:
+        realA = np.transpose(realA, [0, 2,3,1])
+    else:
+        raise(f"num_samples must be > 0. Given {num_samples} < 1")
+    realA = (realA * 0.5 + 0.5)*255
+    realA = realA.astype(np.uint8)
+    return realA
+
 # Converts a Tensor into a Numpy array
 # |imtype|: the desired type of the converted numpy array
 def tensor2im(image_tensor, imtype=np.uint8):

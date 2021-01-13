@@ -132,6 +132,7 @@ class Visualizer():
             image_name = '%s_%s.png' % (name, label)
             save_path = os.path.join(image_dir, image_name)
             util.save_image(image_numpy, save_path)
+            print(f">> Save result: {save_path}")
 
             ims.append(image_name)
             txts.append(label)
