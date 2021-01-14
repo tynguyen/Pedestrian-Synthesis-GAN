@@ -4,5 +4,6 @@ datasets/autel
 datasets/fla_450
 datasets/fake_imgs
 datasets/fake_imgs_1
+datasets/*
 junks
 results
